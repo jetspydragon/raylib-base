@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Test de Raylib</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #222 0%, #000 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            color: #0f0;
+        }
+
+        /* ===== TV FRAME ===== */
+        .tv-frame {
+            padding: 48px 24px 24px 24px;
+            background: linear-gradient(145deg, #3a3a3a, #1a1a1a);
+            border-radius: 24px;
+            box-shadow:
+                inset 0 0 20px rgba(0,0,0,0.8),
+                0 20px 40px rgba(0,0,0,0.9);
+            position: relative;
+        }
+
+        /* ===== PANTALLA ===== */
+        .screen {
+            position: relative;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0, 255, 0, 0.15);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        /* ===== PANEL INFERIOR (DOBLE ALTURA) ===== */
+        .bottom-panel {
+            margin-top: 16px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .game-title {
+            color: #6aff6a;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .studio-name {
+            opacity: 0.7;
+            margin-right: 8px;
+        }
+
+        /* ===== LED POWER ===== */
+        .led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #0f0;
+            box-shadow: 0 0 8px #0f0;
+            animation: pulse 2s infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes pulse {
+            0%   { opacity: 0.3; }
+            50%  { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* ===== BOTONES ===== */
+        .controls {
+            position: absolute;
+            top: 16px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+            margin-right: 16px;
+        }
+
+        button {
+            background: #222;
+            border: 1px solid #555;
+            color: #0f0;
+            font-family: monospace;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        #fs-hint {
+            color: #aaa;
+            font-size: 12px;
+            align-self: center;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="tv-frame">
+
+    <!-- BOTONES -->
+    <div class="controls">
+        <button id="btn-fs" onclick="toggleFullscreen()">Fullscreen</button>
+        <span id="fs-hint" style="display:none;">ESC para salir de Fullscreen</span>
+    </div>
+
+    <!-- PANTALLA -->
+    <div id="screen">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <!-- PANEL INFERIOR -->
+    <div class="bottom-panel">
+        <div style="display:flex; align-items:center;">
+            <div class="led"></div>
+            <div class="game-title">Test de Raylib</div>
+        </div>
+        <div class="studio-name">Cactus Byte Studio</div>
+    </div>
+
+</div>
+
+<script>
+    /* ===== EMSCRIPTEN MODULE ===== */
+    var Module = {
+        canvas: document.getElementById("canvas")
+    };
+
+    /* ===== FULLSCREEN ===== */
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    document.addEventListener("fullscreenchange", () => {
+        const btn = document.getElementById("btn-fs");
+        const hint = document.getElementById("fs-hint");
+
+        if (document.fullscreenElement) {
+            btn.style.display = "none";
+            hint.style.display = "inline";
+        } else {
+            btn.style.display = "inline";
+            hint.style.display = "none";
+        }
+    });
+
+    /* ===== AUTO RESIZE SEGÚN CANVAS ===== */
+    function resizeToCanvas() {
+        const canvas = document.getElementById("canvas");
+        const screen = document.getElementById("screen");
+
+        if (canvas.width && canvas.height) {
+            screen.style.width  = canvas.width + "px";
+            screen.style.height = canvas.height + "px";
+        }
+    }
+
+    window.addEventListener("resize", resizeToCanvas);
+    setInterval(resizeToCanvas, 500);
+</script>
+
+<script src="index.js"></script>
+
+</body>
+</html>
