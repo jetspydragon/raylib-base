@@ -1,0 +1,12 @@
+*.exe
+*.dsym
+main
+
+# Ignorar todo dentro de web_dev
+web_dev/*
+!web_dev/.gitkeep
+
+# Ignorar todo dentro de web_publish
+web_publish/*
+!web_publish/.gitkeep
+!web_publish/index.html
